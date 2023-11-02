@@ -127,12 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Drawable.h" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Drawable.h" />
     <ClInclude Include="MapLoader.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Updatable.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
