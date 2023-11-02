@@ -4,6 +4,8 @@ class Drawable {
 public:
 	Vector2* position = new Vector2(1, 1);
 	
+	Drawable() {}
+
 	Drawable(char toDraw) {
 		drawChar = toDraw;
 	}

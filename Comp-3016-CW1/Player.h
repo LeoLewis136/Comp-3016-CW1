@@ -2,6 +2,8 @@
 
 class Player : public Drawable, public Updatable {
 public:
+	Player() {}
+	
 	Player(char to_draw, Vector2 start_pos) : Drawable(to_draw, start_pos) {}
 
 	void update(std::vector<std::vector<std::string>>& map) override {

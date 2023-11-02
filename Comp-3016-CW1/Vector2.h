@@ -34,6 +34,10 @@ public:
 		return Vector2(x - a.x, y - a.y);
 	}
 
+	bool operator == (Vector2& a) {
+		return (x == a.x) && (y = a.y);
+	}
+
 	// Overload << operator
 	friend std::ostream& operator << (std::ostream& output, const Vector2& a) {
 		output << "(" << a.x << " ," << a.y << " )";
