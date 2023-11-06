@@ -11,8 +11,8 @@
 #include <chrono>
 #include <thread>
 
-#include "MapLoader.h"
 #include "Vector2.h"
+#include "MapLoader.h"
 #include "Updatable.h"
 #include "Drawable.h"
 #include "Player.h"
@@ -28,6 +28,7 @@ public:
 
 private:
 	MapLoader* mapHandler;
+	Player* myPlayer;
 	bool gameRunning = true;
 
 	std::vector<Updatable*> updatables;
@@ -80,16 +81,8 @@ private:
 		const int targetFps = 5;
 		const std::chrono::milliseconds frameDuration(1000 / targetFps);
 		std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
-
-
-		Player* character = new Player('P', Vector2(3, 3));
-		updatables.push_back(character);
-		drawables.push_back(character);
-
-		std::vector<Vector2> path0 = { Vector2(1,1), Vector2(1,2), Vector2(2,2), Vector2(2,1) };
-		Enemy* test = new Enemy('E', Vector2(1,1), path0, *character);
-		drawables.push_back(test);
-		updatables.push_back(test);
+		
+		createObjects();
 
 		while (gameRunning) {
 			system("cls");
@@ -100,5 +93,18 @@ private:
 			startTime = manageFramerate(startTime, frameDuration);
 		}
 
+	}
+
+	void createObjects() {
+		std::vector<Vector2> path0 = { Vector2(1,1), Vector2(1,2), Vector2(2,2), Vector2(2,1) };
+		myPlayer = new Player('P', Vector2(mapHandler->myPlayer.x, mapHandler->myPlayer.y));
+		drawables.push_back(myPlayer);
+		updatables.push_back(myPlayer);
+
+		for (int i = 0; i < mapHandler->enemies.size(); i++) {
+			Enemy* temp = new Enemy('E', Vector2(mapHandler->enemies[i].x, mapHandler->enemies[i].y), path0, *myPlayer);
+			drawables.push_back(temp);
+			updatables.push_back(temp);
+		}
 	}
 };

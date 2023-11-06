@@ -139,6 +139,7 @@
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Info.txt" />
     <Text Include="Map.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
