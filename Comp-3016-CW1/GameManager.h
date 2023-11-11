@@ -10,13 +10,16 @@
 #include <conio.h>
 #include <chrono>
 #include <thread>
+#include <random>
 
+#include "RandomNumbers.h"
 #include "Vector2.h"
 #include "MapLoader.h"
 #include "Updatable.h"
 #include "Drawable.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "TurnBased.h"
 
 class GameManager {
 public:
@@ -29,6 +32,7 @@ public:
 private:
 	MapLoader* mapHandler;
 	Player* myPlayer;
+	Enemy* myEnemy;
 	bool gameRunning = true;
 
 	std::vector<Updatable*> updatables;
@@ -87,6 +91,10 @@ private:
 		while (gameRunning) {
 			system("cls");
 
+			TurnBasedCombat temp(myPlayer, myEnemy);
+			temp.mainLoop();
+
+
 			update();
 			draw();
 
@@ -96,10 +104,12 @@ private:
 	}
 
 	void createObjects() {
-		std::vector<Vector2> path0 = { Vector2(1,1), Vector2(1,2), Vector2(2,2), Vector2(2,1) };
+		std::vector<Vector2> path0 = { Vector2(1,0), Vector2(0,-1), Vector2(-1,0), Vector2(0,1) };
 		myPlayer = new Player('P', Vector2(mapHandler->myPlayer.x, mapHandler->myPlayer.y));
 		drawables.push_back(myPlayer);
 		updatables.push_back(myPlayer);
+
+		myEnemy = new Enemy('E', Vector2(5, 5), path0, *myPlayer);
 
 		for (int i = 0; i < mapHandler->enemies.size(); i++) {
 			Enemy* temp = new Enemy('E', Vector2(mapHandler->enemies[i].x, mapHandler->enemies[i].y), path0, *myPlayer);
