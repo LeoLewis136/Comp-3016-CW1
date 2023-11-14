@@ -92,13 +92,13 @@ private:
 			for (int x = 0; x < map[y].size(); x++) {
 				// Storing the position of any enemies on the map te be created later
 				if (map[y][x] == "E") {
-					enemies.push_back(Vector2(y, x));
+					enemies.push_back(Vector2(x, y));
 					map[y][x] = ".";
 				}
 				
 				// Storing the position of the player on the map to be loaded later
 				else if (map[y][x] == "P") {
-					myPlayer = Vector2(y, x);
+					myPlayer = Vector2(x, y);
 					map[y][x] = ".";
 				}
 			}

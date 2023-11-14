@@ -2,9 +2,11 @@
 
 class Enemy : public Drawable, public Updatable{
 public:
+	bool isDead = false;
+
 	Enemy(){}
 
-	Enemy(char to_draw, Vector2 start_pos, std::vector<Vector2> _path, Player& _character) : Drawable(to_draw, start_pos) {
+	Enemy(char to_draw, Vector2 start_pos, std::vector<Vector2> _path, Player* _character) : Drawable(to_draw, start_pos) {
 		path = _path;
 		character = _character;
 
@@ -17,11 +19,6 @@ public:
 		// Move along specified path
 		//pathIndex = (pathIndex + 1) % path.size();
 		//*position = *position + path[pathIndex];
-
-		// Starting a battle if this enemy collides with the player
-		if (*character.position == *position) {
-			
-		}
 	}
 
 	// Returns all the attacks this enemy can do
@@ -50,6 +47,10 @@ public:
 		
 	}
 
+	void death() {
+
+	}
+
 	// Methods to get the current health and add or remove health
 	int getHealth() { return health; }
 	void modifyHealth(int adjust) { health += adjust; }
@@ -57,7 +58,7 @@ public:
 private:
 	int health = 100;
 
-	Player character;
+	Player* character;
 
 	std::vector<Vector2> path;
 	// All attacks format is (name, damage, miss chance, crit chance)

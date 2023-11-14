@@ -9,26 +9,33 @@ public:
 
 	// Main combat loop returns true if player won and false if they lost
 	bool mainLoop() {
+		character->addEffect(Effect(character->critMult, 1, "Increased Crit", 5));
+
 
 		bool isDead = false;
 
 		while (!isDead) {
 			drawHealth();
+			drawEffects();
 			drawAttacks();
 
 			if (getAttack()) {
+				character->clearEffects();
 				return true;
 			}
 
 			if (enemyAttack()) {
+				character->clearEffects();
 				isDead = true;
 				break;
 			}
 
 			std::cout << std::endl;
+			
+			effectsManager();
 		}
-		
-		return true;
+
+		return false;
 	}
 
 private:
@@ -44,6 +51,23 @@ private:
 			std::cout << "" << std::get<0>(attack) << " | ";
 		}
 		std::cout << std::endl << ":";
+	}
+
+	void drawEffects() {
+		std::cout << "EFFECTS: ";
+		for (Effect effect : character->getEffects()) {
+			std::cout << effect.name << *effect.modifiedStat <<" ";
+		}
+		std::cout << std::endl;
+	}
+
+	// Manage all current status effects or debuffs that are occurring
+	void effectsManager() {
+		for (Effect effect : character->getEffects()) {
+			if (effect.update()) {
+				character->deleteEffect(effect);
+			}
+		}
 	}
 
 	// Gettin the player attack and returning if the enemy has died
@@ -91,7 +115,7 @@ private:
 		}
 
 		// Subtract damage from enemy health
-		character->modifyHealth(-std::get<0>(temp));
+		character->modifyHealth(-std::get<0>(temp) * character->getDefense());
 
 		if (character->getHealth() <= 0) {
 			return true;

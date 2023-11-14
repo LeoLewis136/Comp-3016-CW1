@@ -35,7 +35,7 @@ public:
 	}
 
 	bool operator == (Vector2& a) {
-		return (x == a.x) && (y = a.y);
+		return (x == a.x) && (y == a.y);
 	}
 
 	// Overload << operator

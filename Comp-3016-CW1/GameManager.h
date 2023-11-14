@@ -15,11 +15,14 @@
 #include "RandomNumbers.h"
 #include "Vector2.h"
 #include "MapLoader.h"
+#include "Effect.h"
 #include "Updatable.h"
 #include "Drawable.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "TurnBased.h"
+
+
 
 class GameManager {
 public:
@@ -29,14 +32,21 @@ public:
 		gameLoop();
 	}
 
+	void startBattle(Enemy* enemy) {
+		TurnBasedCombat* temp = new TurnBasedCombat(myPlayer, enemy);
+		temp->mainLoop();
+
+		delete(temp);
+	}
+
 private:
 	MapLoader* mapHandler;
 	Player* myPlayer;
-	Enemy* myEnemy;
 	bool gameRunning = true;
 
 	std::vector<Updatable*> updatables;
 	std::vector<Drawable*> drawables;
+	std::vector<Enemy*> enemies;
 
 	/* Core game loop functions which organise 
 	the calling order of all game loop functions*/
@@ -62,7 +72,11 @@ private:
 			std::cout << std::endl;
 		}
 
-		std::cout << "UI testing" << std::endl;
+		//std::cout << "UI testing" ;
+		//std::cout << *myPlayer->position << std::endl;
+		//for (Enemy* enemy : enemies) {
+		//	std::cout << enemy->position->distanceTo(*myPlayer->position) << "  ";
+		//}
 	}
 
 	std::chrono::high_resolution_clock::time_point manageFramerate(std::chrono::high_resolution_clock::time_point _startTime, std::chrono::milliseconds _frameDuration) {
@@ -91,11 +105,8 @@ private:
 		while (gameRunning) {
 			system("cls");
 
-			TurnBasedCombat temp(myPlayer, myEnemy);
-			temp.mainLoop();
-
-
 			update();
+			checkEnemies();
 			draw();
 
 			startTime = manageFramerate(startTime, frameDuration);
@@ -109,12 +120,56 @@ private:
 		drawables.push_back(myPlayer);
 		updatables.push_back(myPlayer);
 
-		myEnemy = new Enemy('E', Vector2(5, 5), path0, *myPlayer);
-
 		for (int i = 0; i < mapHandler->enemies.size(); i++) {
-			Enemy* temp = new Enemy('E', Vector2(mapHandler->enemies[i].x, mapHandler->enemies[i].y), path0, *myPlayer);
+			Enemy* temp = new Enemy('E', Vector2(mapHandler->enemies[i].x, mapHandler->enemies[i].y), path0, myPlayer);
 			drawables.push_back(temp);
 			updatables.push_back(temp);
+			enemies.push_back(temp);
+		}
+	}
+
+	void deleteEnemy(Enemy* _toDelete) {
+		int count = 0;
+		while (count < drawables.size() || count < updatables.size()) {
+			Enemy* tempPtr = dynamic_cast<Enemy*>(drawables[count]);
+			if (tempPtr && tempPtr == _toDelete) {
+				drawables.erase(drawables.begin() + count);
+			}
+
+			tempPtr = dynamic_cast<Enemy*>(updatables[count]);
+			if (tempPtr && tempPtr == _toDelete) {
+				updatables.erase(updatables.begin() + count);
+			}
+
+			count++;
+		}
+
+		for (int i = 0; i < enemies.size(); i++) {
+			if (_toDelete == enemies[i]) {
+				enemies.erase(enemies.begin() + i);
+			}
+		}
+
+		delete _toDelete;
+	}
+
+	void checkEnemies() {
+		for (Enemy* enemy : enemies) {
+			if (*enemy->position == *myPlayer->position) {
+				TurnBasedCombat* combat = new TurnBasedCombat(myPlayer, enemy);
+
+				bool playerWon = combat->mainLoop();
+				// Clearing the enemy if they die
+				if (playerWon) {
+					deleteEnemy(enemy);
+					enemy->isDead = true;
+					break;
+				}
+				else {
+					gameRunning = false;
+					break;
+				}
+			}
 		}
 	}
 };

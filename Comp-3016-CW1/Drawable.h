@@ -15,7 +15,7 @@ public:
 		*position = _position;
 	}
 
-	std::string getDrawable() {
+	virtual std::string getDrawable() {
 		return std::string(1, drawChar);
 	}
 
