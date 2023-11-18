@@ -30,9 +30,9 @@ bool TurnBasedCombat::mainLoop() {
 			break;
 		}
 
-		std::cout << std::endl;
-
 		effectsManager();
+
+		std::cout << std::endl;
 	}
 	
 	return false;
@@ -56,17 +56,18 @@ void TurnBasedCombat::drawAttacks() {
 // Gettin the player attack and returning if the enemy has died
 bool TurnBasedCombat::getAttack() {
 	std::string input;
-	std::cin >> input;
+	getline(std::cin, input);
 
 	system("cls");
 
-	std::tuple<float, bool, bool, std::string>* temp = character->getAttack(input);
-	if (temp) {
-		std::cout << "Player attacked with " << std::get<3>(*temp) << " and ";
-		if (std::get<1>(*temp)) {
+	std::tuple<float, bool, bool, std::string>* tempAttack = character->getAttack(input);
+	Effect* tempEffect = character->getMove(input);
+	if (tempAttack) {
+		std::cout << "Player attacked with " << std::get<3>(*tempAttack) << " and ";
+		if (std::get<1>(*tempAttack)) {
 			std::cout << "Missed" << std::endl;
 		}
-		else if (std::get<2>(*temp)) {
+		else if (std::get<2>(*tempAttack)) {
 			std::cout << "Crit" << std::endl;
 		}
 		else {
@@ -74,12 +75,17 @@ bool TurnBasedCombat::getAttack() {
  		}
 
 		// Subtract damage from enemy health
-		enemy->modifyHealth(-std::get<0>(*temp));
+		enemy->modifyHealth(-std::get<0>(*tempAttack));
 
 		if (enemy->getHealth() <= 0) {
 			return true;
 		}
 	}
+	else if (tempEffect) {
+
+	}
+
+
 
 	return false;
 }
@@ -100,10 +106,9 @@ bool TurnBasedCombat::enemyAttack() {
 		else {
 			std::cout << "Hit" << std::endl;
 		}
-
 		
 		// Subtract damage from enemy health
-		character->modifyHealth(-std::get<0>(*temp));
+		character->modifyHealth(-std::get<0>(*temp) / character->getDefense());
 
 		if (character->getHealth() <= 0) {
 			return true;
@@ -120,9 +125,23 @@ void TurnBasedCombat::drawHealth() {
 }
 
 void TurnBasedCombat::drawEffects() {
+	int i = 0;
 
+	std::cout << "EFFECT:";
+	for (i = 0; i < character->getActiveEffects().size(); i++) {
+		std::cout << " | " << character->getActiveEffects()[i]->name;
+	}
+	if (i > 0) {
+		std::cout << " | ";
+	}
+	std::cout << std::endl;
+	
 }
 
 void TurnBasedCombat::effectsManager() {
-
+	for (Effect* effect : character->getActiveEffects()) {
+		if (effect->update()) {
+			character->deleteStatusEffect(effect);
+		}
+	}
 }

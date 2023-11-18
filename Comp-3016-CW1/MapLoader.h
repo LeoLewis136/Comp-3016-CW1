@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <tuple>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -12,7 +13,7 @@ public:
 	std::vector<std::vector<std::string>> map;
 	std::vector<std::vector<Vector2>> paths;
 
-	std::vector<Vector2> enemies;
+	std::vector<std::tuple<Vector2, std::string>> enemies;
 	Vector2 myPlayer;
 
 	// Constructor that takes a location to load the map from

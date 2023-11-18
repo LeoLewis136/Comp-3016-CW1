@@ -79,17 +79,51 @@ void GameManager::gameLoop() {
 	std::cout << "You Lost";
 }
 
+// Create entites that are shown on the map
 void GameManager::createObjects() {
+	// Unused
 	std::vector<Vector2> path0 = { Vector2(1,0), Vector2(0,-1), Vector2(-1,0), Vector2(0,1) };
+	
+	// Add the player in the correct place
 	myPlayer = new Player('P', Vector2(mapHandler->myPlayer.x, mapHandler->myPlayer.y), 100, 1, 2);
 	drawables.push_back(myPlayer);
 	updatables.push_back(myPlayer);
 
+	// Check all the found enemies an place them in the correct place
 	for (int i = 0; i < mapHandler->enemies.size(); i++) {
-		Enemy* temp = new Enemy('E', Vector2(mapHandler->enemies[i].x, mapHandler->enemies[i].y), path0, myPlayer, 60, 1, 2);
-		drawables.push_back(temp);
-		updatables.push_back(temp);
-		enemies.push_back(temp);
+		// Place the enemies in the correct place and give them the correct attacks
+		if (std::get<1>(mapHandler->enemies[i]) == "E") {
+			Enemy* temp = new Enemy('E', Vector2(std::get<0>(mapHandler->enemies[i]).x, std::get<0>(mapHandler->enemies[i]).y), path0, myPlayer, 70, 1, 2);
+			
+			temp->availableAttacks.push_back(std::make_tuple("Punch", 20, 5, 5));
+			temp->availableAttacks.push_back(std::make_tuple("Claw", 10, 1, 20));
+			
+			drawables.push_back(temp);
+			updatables.push_back(temp);
+			enemies.push_back(temp);
+		}
+		if (std::get<1>(mapHandler->enemies[i]) == "B") {
+			Enemy* temp = new Enemy('B', Vector2(std::get<0>(mapHandler->enemies[i]).x, std::get<0>(mapHandler->enemies[i]).y), path0, myPlayer, 100, 1, 1.2);
+
+			temp->availableAttacks.push_back(std::make_tuple("Ground Slam", 40, 0, 0));
+			temp->availableAttacks.push_back(std::make_tuple("Punch", 10, 10, 4));
+
+			drawables.push_back(temp);
+			updatables.push_back(temp);
+			enemies.push_back(temp);
+		}
+		if (std::get<1>(mapHandler->enemies[i]) == "R") {
+			Enemy* temp = new Enemy('R', Vector2(std::get<0>(mapHandler->enemies[i]).x, std::get<0>(mapHandler->enemies[i]).y), path0, myPlayer, 50, 1, 4);
+
+			temp->availableAttacks.push_back(std::make_tuple("Slash", 5, 5, 25));
+			temp->availableAttacks.push_back(std::make_tuple("Thrust", 10, 10, 15));
+
+			drawables.push_back(temp);
+			updatables.push_back(temp);
+			enemies.push_back(temp);
+		}
+
+			
 	}
 }
 
@@ -119,21 +153,29 @@ void GameManager::deleteEnemy(Enemy* _toDelete) {
 }
 
 void GameManager::checkEnemies() {
-	for (Enemy* enemy : enemies) {
-		if (*enemy->position == *myPlayer->position) {
-			TurnBasedCombat* combat = new TurnBasedCombat(myPlayer, enemy);
+	if (enemies.size() > 0) {
+		for (Enemy* enemy : enemies) {
+			if (*enemy->position == *myPlayer->position) {
+				TurnBasedCombat* combat = new TurnBasedCombat(myPlayer, enemy);
 
-			bool playerWon = combat->mainLoop();
-			// Clearing the enemy if they die
-			if (playerWon) {
-				this->deleteEnemy(enemy);
-				enemy->isDead = true;
-				break;
-			}
-			else {
-				gameRunning = false;
-				break;
+				bool playerWon = combat->mainLoop();
+				// Clearing the enemy if they die
+				if (playerWon) {
+					this->deleteEnemy(enemy);
+					enemy->isDead = true;
+					break;
+				}
+				else {
+					gameRunning = false;
+					break;
+				}
 			}
 		}
 	}
+	else {
+		std::cout << "You won \nPress any key to exit";
+		_getch();
+		exit(0);
+	}
+	
 }

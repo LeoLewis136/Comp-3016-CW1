@@ -14,13 +14,14 @@ void Effect::setParent(Combat* temp) {
 }
 
 bool Effect::update() {
-	duration--;
-
 	// When this effect is over reset stat
 	if (duration <= 0) {
 		deleteEffect();
 		return true;
 	}
+
+	duration--;
+
 	return false;
 }
 
@@ -40,9 +41,9 @@ void Effect::deleteEffect() {
 }
 
 // Applying the desired effect of this effect object upon creation
-std::string Effect::manageEffect(int _value) {
+std::string Effect::manageEffect(float _value) {
 	if (name == "Fortify") {
-		return "";
+		myParentObject->setDefense(_value);;
 	}
 	else if (name == "Critical surge") {
 		myParentObject->setCritMult(_value);

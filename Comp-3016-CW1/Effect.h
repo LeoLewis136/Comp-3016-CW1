@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 class Combat;
 
@@ -27,7 +28,7 @@ private:
 	void deleteEffect();
 
 	// Applying the desired effect of this effect object upon creation
-	std::string manageEffect(int _value);
+	std::string manageEffect(float _value);
 
 	float change;
 	Combat* myParentObject;

@@ -82,7 +82,15 @@ void MapLoader::finalPass() {
 		for (int x = 0; x < map[y].size(); x++) {
 			// Storing the position of any enemies on the map te be created later
 			if (map[y][x] == "E") {
-				enemies.push_back(Vector2(x, y));
+				enemies.push_back(std::make_tuple(Vector2(x, y), "E"));
+				map[y][x] = ".";
+			}
+			if (map[y][x] == "B") {
+				enemies.push_back(std::make_tuple(Vector2(x, y), "B"));
+				map[y][x] = ".";
+			}
+			if (map[y][x] == "R") {
+				enemies.push_back(std::make_tuple(Vector2(x, y), "R"));
 				map[y][x] = ".";
 			}
 

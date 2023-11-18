@@ -8,13 +8,13 @@ Player::Player(char to_draw, Vector2 start_pos, float health, float defense, flo
 
 	/* Assigning all the player attacks in the format :
 	(Attack name, Damage, Miss chance, Crit chance) */
-	this->availableAttacks.push_back(std::make_tuple("Punch", 15, 2, 10));
-	this->availableAttacks.push_back(std::make_tuple("Claw", 10, 1, 30));
+	this->availableAttacks.push_back(std::make_tuple("Punch", 15, 5, 15));
+	this->availableAttacks.push_back(std::make_tuple("Claw", 100, 3, 40));
 
 	/* Assigning all the player effects in the format :
 	(Effect name, Effect amount, Duration, Effect player) */
 	this->availableMoves.push_back(std::make_tuple("Fortify", 2, 2, true));
-	this->availableMoves.push_back(std::make_tuple("Critical surge", 3, 1, true));
+	this->availableMoves.push_back(std::make_tuple("Critical surge", 3, 3, true));
 	this->availableMoves.push_back(std::make_tuple("Heal", 100, 0, true));
 
 }

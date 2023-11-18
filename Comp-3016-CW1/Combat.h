@@ -51,7 +51,7 @@ public:
 
 	// Check if the effect exists and working out what to do with the effect
 	// Returns the format: (Effect object, Apply to player)
-	std::tuple<Effect> getMove(std::string toCheck);
+	Effect* getMove(std::string toCheck);
 
 	// All attacks. Format is (name, damage, miss chance, crit chance)
 	std::vector<std::tuple<std::string, float, float, float>> availableAttacks;

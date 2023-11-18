@@ -102,8 +102,8 @@ std::tuple<float, bool, bool, std::string>* Combat::getAttack(std::string toChec
 }
 
 // Check if the effect exists and working out what to do with the effect
-// Returns the format: (Effect object, Apply to player)
-std::tuple<Effect> Combat::getMove(std::string toCheck) {
+// Returns the format: (Effect object)
+Effect* Combat::getMove(std::string toCheck) {
 	// Working out what the index of the selected effect is in the myEffects vector
 	int index = -1;
 	for (int i = 0; i < availableMoves.size(); i++) {
@@ -112,17 +112,30 @@ std::tuple<Effect> Combat::getMove(std::string toCheck) {
 		}
 	}
 
-	// Creating an effect and returning the effect along with where it should go
-	if (std::get<2>(availableMoves[index]) > 0) {
-		Effect* temp = new Effect(std::get<2>(availableMoves[index]), std::get<0>(availableMoves[index]), std::get<1>(availableMoves[index]));
-		return *temp;
+	if (index >= 0) {
+		// Creating an effect and returning the effect along with where it should go
+		if (std::get<2>(availableMoves[index]) > 0) {
+			Effect* temp = new Effect(std::get<2>(availableMoves[index]), std::get<0>(availableMoves[index]), std::get<1>(availableMoves[index]));
+			temp->setParent(this);
+			this->addStatusEffect(temp);
+			return temp;
+		}
+		else {
+			Effect* temp = new Effect(std::get<2>(availableMoves[index]), std::get<0>(availableMoves[index]), std::get<1>(availableMoves[index]));
+			temp->setParent(this);
+		}
 	}
+		
+	
+	return NULL;
 }
 
 // Function to convert string to all lower case
 std::string Combat::toLower(std::string toConvert) {
 	for (char& c : toConvert) {
-		c = std::tolower(c);
+		if (c != ' ') {
+			c = std::tolower(c);
+		}
 	}
 
 	return toConvert;
