@@ -137,16 +137,26 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Combat.cpp" />
+    <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameManager.h" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="MapLoader.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="TurnBased.cpp" />
+    <ClCompile Include="Updatable.cpp" />
+    <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Combat.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="RandomNumbers.h" />
     <ClInclude Include="TurnBased.h" />
     <ClInclude Include="Updatable.h" />
     <ClInclude Include="Vector2.h" />

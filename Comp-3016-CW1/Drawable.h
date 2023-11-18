@@ -1,23 +1,20 @@
 #pragma once
 
+#include <string>
+
+#include "Vector2.h"
+
 class Drawable {
 public:
 	Vector2* position = new Vector2(1, 1);
 	
-	Drawable() {}
+	Drawable();
 
-	Drawable(char toDraw) {
-		drawChar = toDraw;
-	}
+	Drawable(char toDraw);
 
-	Drawable(char toDraw, Vector2 _position) {
-		drawChar = toDraw;
-		*position = _position;
-	}
+	Drawable(char toDraw, Vector2 _position);
 
-	virtual std::string getDrawable() {
-		return std::string(1, drawChar);
-	}
+	virtual std::string getDrawable();
 
 private:
 	char drawChar;
