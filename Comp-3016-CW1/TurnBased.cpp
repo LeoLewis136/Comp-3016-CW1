@@ -14,22 +14,27 @@ TurnBasedCombat::TurnBasedCombat(Player* _character, Enemy* _enemy) {
 bool TurnBasedCombat::mainLoop() {
 	bool isDead = false;
 
+	// While the player is not dead
 	while (!isDead) {
+		// Show the user important information
 		drawHealth();
 		drawEffects();
 		drawAttacks();
 
+		// Get player attack and check if the enemy has died
 		if (getAttack()) {
 			character->clearStatusEffects();
 			return true;
 		}
 
+		// Get enemy attack and check if player has died
 		if (enemyAttack()) {
 			character->clearStatusEffects();
 			isDead = true;
 			break;
 		}
 
+		// Update all currently active effects
 		effectsManager();
 
 		std::cout << std::endl;
@@ -40,9 +45,11 @@ bool TurnBasedCombat::mainLoop() {
 
 // Function to draw the player attacks
 void TurnBasedCombat::drawAttacks() {
+	// Get all attacks / moves that are available
 	std::vector<std::tuple<std::string, float, float, float>> attacks = character->getAvailableAttacks();
 	std::vector<std::tuple<std::string, float, int, bool>> effects = character->getAvailableMoves();
 
+	// Output all attacks then all moves
 	std::cout << "AVAILABLE MOVES: | ";
 	for (std::tuple<std::string, int, int, int> attack : attacks) {
 		std::cout << "" << std::get<0>(attack) << " | ";
@@ -59,10 +66,14 @@ bool TurnBasedCombat::getAttack() {
 	getline(std::cin, input);
 
 	system("cls");
-
+	
+	// Storing the attack / move information
 	std::tuple<float, bool, bool, std::string>* tempAttack = character->getAttack(input);
 	Effect* tempEffect = character->getMove(input);
+	
+	// If the attack existed
 	if (tempAttack) {
+		// Output what the attack was and how the attack went
 		std::cout << "Player attacked with " << std::get<3>(*tempAttack) << " and ";
 		if (std::get<1>(*tempAttack)) {
 			std::cout << "Missed" << std::endl;
@@ -77,25 +88,25 @@ bool TurnBasedCombat::getAttack() {
 		// Subtract damage from enemy health
 		enemy->modifyHealth(-std::get<0>(*tempAttack));
 
+		// Check if enemy died
 		if (enemy->getHealth() <= 0) {
 			return true;
 		}
 	}
-	else if (tempEffect) {
-
-	}
-
-
 
 	return false;
 }
 
 // Get the enemy to attack the player returns if the player has died
 bool TurnBasedCombat::enemyAttack() {
+	// Get all the attacks that the enemy has
 	std::vector<std::tuple<std::string, float, float, float>> allAttacks = enemy->getAvailableAttacks();
+	// only continuing if there are any available attacks for the enemy
 	if (allAttacks.size() > 0) {
+		// Choose a random attack
 		std::tuple<float, bool, bool, std::string>* temp = enemy->getAttack(std::get<0>(allAttacks[rand() % allAttacks.size()]));
 
+		// Show what the attack was as well as how it went
 		std::cout << "Enemy attacked with " << std::get<3>(*temp) << " and ";
 		if (std::get<1>(*temp)) {
 			std::cout << "Missed" << std::endl;
@@ -107,9 +118,10 @@ bool TurnBasedCombat::enemyAttack() {
 			std::cout << "Hit" << std::endl;
 		}
 		
-		// Subtract damage from enemy health
+		// Subtract damage from player health
 		character->modifyHealth(-std::get<0>(*temp) / character->getDefense());
 
+		// Check if player died
 		if (character->getHealth() <= 0) {
 			return true;
 		}
@@ -124,9 +136,11 @@ void TurnBasedCombat::drawHealth() {
 	std::cout << "Enemy: " << enemy->getHealth() << std::endl;
 }
 
+// Draw any currently active effects on the player
 void TurnBasedCombat::drawEffects() {
 	int i = 0;
 
+	// Just loop through the entire vector of active effects and output them
 	std::cout << "EFFECT:";
 	for (i = 0; i < character->getActiveEffects().size(); i++) {
 		std::cout << " | " << character->getActiveEffects()[i]->name;
@@ -138,7 +152,9 @@ void TurnBasedCombat::drawEffects() {
 	
 }
 
+// Updating all effects 
 void TurnBasedCombat::effectsManager() {
+	// Update player effects
 	for (Effect* effect : character->getActiveEffects()) {
 		if (effect->update()) {
 			character->deleteStatusEffect(effect);

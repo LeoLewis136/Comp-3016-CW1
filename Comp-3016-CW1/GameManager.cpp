@@ -21,13 +21,17 @@ void GameManager::update() {
 	}
 }
 
+// Draw the map
 void GameManager::draw() {
+	// Create a temporary copy of the map to add dynamic objects without affecting the original
 	std::vector<std::vector<std::string>> tempMap = mapHandler->map;
 
+	// Add all the drawable objects in the correct position in the temporary map
 	for (int i = 0; i < drawables.size(); i++) {
 		tempMap[drawables[i]->position->y][drawables[i]->position->x] = drawables[i]->getDrawable();
 	}
 
+	// Loop through entire map and draw to screen
 	for (int y = 0; y < tempMap.size(); y++) {
 		for (int x = 0; x < tempMap[y].size(); x++) {
 			std::cout << tempMap[y][x];
@@ -42,6 +46,7 @@ void GameManager::draw() {
 	//}
 }
 
+// Function to pause the execution of the game for the correct time to manage a consistent framerate
 std::chrono::high_resolution_clock::time_point GameManager::manageFramerate(std::chrono::high_resolution_clock::time_point _startTime, std::chrono::milliseconds _frameDuration) {
 	// Calculate elapsed time
 	auto endTime = std::chrono::high_resolution_clock::now();
@@ -56,6 +61,7 @@ std::chrono::high_resolution_clock::time_point GameManager::manageFramerate(std:
 	return std::chrono::high_resolution_clock::now();
 }
 
+// Managing the flow of the game loop
 void GameManager::gameLoop() {
 	/* Setting up required variables to keep a
 	consistent framerate no matter execution time */
@@ -127,28 +133,34 @@ void GameManager::createObjects() {
 	}
 }
 
+// Handiling the removal of an enemy object form all required locations when the enemy dies
 void GameManager::deleteEnemy(Enemy* _toDelete) {
 	int count = 0;
 	while (count < drawables.size() || count < updatables.size()) {
+		// Check if this index of drawable objects is the correct enemy
 		Enemy* tempPtr = dynamic_cast<Enemy*>(drawables[count]);
 		if (tempPtr && tempPtr == _toDelete) {
 			drawables.erase(drawables.begin() + count);
 		}
 
+		// Check if this index of updatable objects is the correct enemy
 		tempPtr = dynamic_cast<Enemy*>(updatables[count]);
 		if (tempPtr && tempPtr == _toDelete) {
 			updatables.erase(updatables.begin() + count);
 		}
 
+		// Increase index
 		count++;
 	}
 
+	// Delete this enemy from the enemies collection
 	for (int i = 0; i < enemies.size(); i++) {
 		if (_toDelete == enemies[i]) {
 			enemies.erase(enemies.begin() + i);
 		}
 	}
-
+	
+	// Delete enemy pointer
 	delete _toDelete;
 }
 

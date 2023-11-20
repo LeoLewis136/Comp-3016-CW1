@@ -8,11 +8,13 @@ Effect::Effect(int _duration, std::string _effectName, float _value) {
 	name = _effectName;
 }
 
+// Set the owner of this effect object
 void Effect::setParent(Combat* temp) {
 	myParentObject = temp;
 	manageEffect(change);
 }
 
+// Updating the status of this effect every update cycle
 bool Effect::update() {
 	// When this effect is over reset stat
 	if (duration <= 0) {
@@ -25,12 +27,13 @@ bool Effect::update() {
 	return false;
 }
 
+// Get duration when required and update duration to allow user to stack the same effect twice
 int Effect::getDuration() { return duration; }
 void Effect::updateDuration(int newDuration) {
 	duration = newDuration;
 }
 
-
+// Managing resetting the stat of the owner object when this effect is over
 void Effect::deleteEffect() {
 	if (name == "Fortify") {
 		myParentObject->resetDefense();

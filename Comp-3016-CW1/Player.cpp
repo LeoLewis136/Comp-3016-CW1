@@ -2,14 +2,12 @@
 #include "Combat.h"
 #include "Player.h"
 
-
+// Player constructor
 Player::Player(char to_draw, Vector2 start_pos, float health, float defense, float critMult) : Drawable(to_draw, start_pos), Combat(health, critMult, defense) {
-
-
 	/* Assigning all the player attacks in the format :
 	(Attack name, Damage, Miss chance, Crit chance) */
 	this->availableAttacks.push_back(std::make_tuple("Punch", 15, 5, 15));
-	this->availableAttacks.push_back(std::make_tuple("Claw", 100, 3, 40));
+	this->availableAttacks.push_back(std::make_tuple("Claw", 8, 3, 40));
 
 	/* Assigning all the player effects in the format :
 	(Effect name, Effect amount, Duration, Effect player) */
@@ -19,9 +17,12 @@ Player::Player(char to_draw, Vector2 start_pos, float health, float defense, flo
 
 }
 
+// This players update method
 void Player::update(std::vector<std::vector<std::string>>& map) {
+	// Get current movement input
 	Vector2 toMove = this->inputs();
 
+	// Move player if the map tile is empty
 	if (map[position->y + toMove.y][position->x + toMove.x] == ".") {
 		*position = *position + toMove;
 	}

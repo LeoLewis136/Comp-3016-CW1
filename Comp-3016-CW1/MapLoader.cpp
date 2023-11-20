@@ -51,44 +51,22 @@ void MapLoader::mapLoader(std::string mapLocation) {
 
 }
 
-// Load required info for the game
-void MapLoader::mapInfo(std::string mapInfoLocation) {
-	// Variables required for file reading
-	std::ifstream infoFile(mapInfoLocation);
-	std::string line;
-	std::vector<std::vector<std::string>> tempInfo;
-
-	// Read each line of the file line by line and store in tempInfo
-	if (infoFile.is_open()) {
-		while (getline(infoFile, line)) {
-			tempInfo.push_back(this->stringSplit(line, ','));
-		}
-	}
-	else {
-		std::cerr << "Info file cannot be opened";
-		std::exit(0);
-	}
-
-	for (int y = 0; y < tempInfo.size(); y++) {
-		for (int x = 0; x < tempInfo[y].size(); x++) {
-
-		}
-	}
-}
-
 // Looking for any special objects defined within the map file
 void MapLoader::finalPass() {
 	for (int y = 0; y < map.size(); y++) {
 		for (int x = 0; x < map[y].size(); x++) {
 			// Storing the position of any enemies on the map te be created later
+			// Standard enemy
 			if (map[y][x] == "E") {
 				enemies.push_back(std::make_tuple(Vector2(x, y), "E"));
 				map[y][x] = ".";
 			}
+			// Brute enemy
 			if (map[y][x] == "B") {
 				enemies.push_back(std::make_tuple(Vector2(x, y), "B"));
 				map[y][x] = ".";
 			}
+			// Rogue enemy
 			if (map[y][x] == "R") {
 				enemies.push_back(std::make_tuple(Vector2(x, y), "R"));
 				map[y][x] = ".";
