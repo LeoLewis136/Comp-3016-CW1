@@ -19,3 +19,4 @@ To start a fight with an enemy just move so that you are colliding with the enem
 Within the game there are many places where null checks are used to ensure that null instances aren't used as an object. There is also some error handling with the file reading as if the map file is not found then the game doesn't try to continue further
 
 ### Video link
+[Link to video](https://www.youtube.com/watch?v=l1VrLSh7yog)
